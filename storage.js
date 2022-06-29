@@ -14,7 +14,7 @@ const {
     S3_REGION,
 } = require("./config");
 
-const maxSize = 1000;
+const maxSize = 1000 * 1000;
 
 const router = express.Router();
 
