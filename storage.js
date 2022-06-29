@@ -14,6 +14,8 @@ const {
     S3_REGION,
 } = require("./config");
 
+const maxSize = 1000;
+
 const router = express.Router();
 
 const s3Client = new S3Client({
@@ -42,10 +44,17 @@ const upload = multer({
             cb(null, fullPath);
         },
     }),
+    limits: {
+        fileSize: maxSize,
+    },
 });
 
-router.post("/upload", upload.array("files", 3), function (req, res, next) {
-    res.send("Successfully uploaded " + req.files.length + " files!");
+router.post("/upload", upload.single("file"), function (req, res, next) {
+    console.log(req.file);
+    res.json({
+        success: true,
+        data: req.file,
+    });
 });
 
 module.exports = router;
