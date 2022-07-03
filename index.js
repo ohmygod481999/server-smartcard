@@ -1,9 +1,14 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
+
 const storage = require("./storage");
+const registration = require("./registration");
+
 const app = express();
 // middleware
+app.use(cookieParser());
 app.use(express.json());
 app.use(
     cors({
@@ -16,6 +21,7 @@ app.use(morgan("tiny"));
 app.disable("x-powered-by");
 // routes
 app.use("/storage", storage);
+app.use("/registration", registration);
 // error handler
 app.use((err, req, res, next) => {
     if (err) {
