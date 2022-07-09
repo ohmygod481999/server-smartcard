@@ -18,6 +18,9 @@ router.post("/", async (req, res) => {
     const cookiesString = cookies.join(";");
 
     data['traits']['card_id'] = parseInt(cardId)
+    data['traits']['referer_id'] = parseInt(referrerCode)
+
+    console.log(data['traits']['referer_id'])
 
     // pool.query("SELECT * FROM ", (err, res) => {
     //     console.log(err, res);
@@ -43,7 +46,7 @@ router.post("/", async (req, res) => {
             data: registRes.data,
         });
     } catch (error) {
-        console.log(error);
+        console.log(error.response.data);
         res.status(_.get(error, "response.status") || 500);
         res.json({
             success: false,
