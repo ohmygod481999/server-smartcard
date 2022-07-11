@@ -5,6 +5,9 @@ const cookieParser = require("cookie-parser");
 
 const storage = require("./storage");
 const registration = require("./registration");
+const { consumerListener } = require("./consumer");
+
+consumerListener()
 
 const app = express();
 // middleware
