@@ -2,34 +2,37 @@ const express = require("express");
 const { ory } = require("./ory");
 const _ = require("lodash");
 const amqp = require("amqplib/callback_api");
+const { getParents } = require("./db-queries");
 // const { pool } = require("./pg-client");
 
-let channel
-let connection
+let channel;
+let connection;
 
-connect()
+connect();
 
 // connect to rabbitmq
 function connect() {
-    amqp.connect("amqp://admin:admin@139.59.234.34:5672", function (error0, _connection) {
-        if (error0) {
-            throw error0;
-        }
-        connection = _connection
-        connection.createChannel(function (error1, _channel) {
-            if (error1) {
-                throw error1;
+    amqp.connect(
+        "amqp://admin:admin@139.59.234.34:5672",
+        function (error0, _connection) {
+            if (error0) {
+                throw error0;
             }
-            const queue = "transaction";
+            connection = _connection;
+            connection.createChannel(function (error1, _channel) {
+                if (error1) {
+                    throw error1;
+                }
+                const queue = "transaction";
 
-            channel = _channel
+                channel = _channel;
 
-            channel.assertQueue(queue, {
-                durable: false,
+                channel.assertQueue(queue, {
+                    durable: false,
+                });
             });
-            
-        });
-    });
+        }
+    );
 }
 
 const router = express.Router();
@@ -46,27 +49,36 @@ router.post("/", async (req, res) => {
     );
     const cookiesString = cookies.join(";");
 
-    data['traits']['card_id'] = parseInt(cardId)
-    data['traits']['referer_id'] = parseInt(referrerCode)
+    data["traits"]["card_id"] = parseInt(cardId);
+    data["traits"]["referer_id"] = parseInt(referrerCode);
 
     // get parents and push to queue
 
-    console.log(data['traits']['referer_id'])
+    const referer_id = data["traits"]["referer_id"];
 
-    channel.sendToQueue(
-        'transaction',
-        Buffer.from(
-          JSON.stringify({
-            account_id: data['traits']['referer_id'],
-            transaction_type: 0, // 0: refer
-            payload: {
-                level: 0
-            },
-            date: new Date(),
-          }),
-        ),
-      )
-    
+    const parents = await getParents();
+
+    parents.forEach((parent, i) => {
+        const { id, name, referer_id, is_agency } = parent;
+
+        if (i === 0 || is_agency) {
+            // neu la nguoi gioi thieu truc tiep hoac nguoi do la agency thi thuong?
+            channel.sendToQueue(
+                "transaction",
+                Buffer.from(
+                    JSON.stringify({
+                        account_id: id,
+                        transaction_type: 0, // 0: refer
+                        payload: {
+                            level: i,
+                            is_agency,
+                        },
+                        date: new Date(),
+                    })
+                )
+            );
+        }
+    });
 
     // pool.query("SELECT * FROM ", (err, res) => {
     //     console.log(err, res);
