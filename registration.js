@@ -56,7 +56,7 @@ router.post("/", async (req, res) => {
 
     const referer_id = data["traits"]["referer_id"];
 
-    const parents = await getParents();
+    const parents = await getParents(referer_id);
 
     parents.forEach((parent, i) => {
         const { id, name, referer_id, is_agency } = parent;
