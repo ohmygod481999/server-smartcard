@@ -33,3 +33,11 @@ exports.CREATE_WALLET_MUTATION = gql`
         }
     }
 `;
+
+exports.GET_ACCOUNT_BY_ID_QUERY = gql`
+    query getAccount($account_id: Int!) {
+        account_by_pk(id: $account_id) {
+            id
+        }
+    }
+`;

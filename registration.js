@@ -8,6 +8,7 @@ const {
     INSERT_ACCOUNT_MUTATION,
     CONNECT_ACCONT_TO_CARD_MUTATION,
     CREATE_WALLET_MUTATION,
+    GET_ACCOUNT_BY_ID_QUERY,
 } = require("./queries");
 // const { pool } = require("./pg-client");
 
@@ -57,6 +58,27 @@ router.post("/", async (req, res) => {
 
     // data["traits"]["card_id"] = parseInt(cardId);
     // data["traits"]["referer_id"] = parseInt(referrerCode);
+    cardId = parseInt(cardId);
+    let referer_id = null;
+
+    if (referrerCode) {
+        referer_id = parseInt(referrerCode);
+        const accountRes = await graphQLClient.request(
+            GET_ACCOUNT_BY_ID_QUERY,
+            {
+                account_id: referer_id,
+            }
+        );
+
+        if (!accountRes.account_by_pk) {
+            res.json({
+                success: false,
+                data: null,
+                message: "Mã giới thiệu không chính xác",
+            });
+            return;
+        }
+    }
 
     try {
         // const registRes = await ory.submitSelfServiceRegistrationFlow(flowId, data, "csrf_token_806060ca5bf70dff3caa0e5c860002aade9d470a5a4dce73bcfa7ba10778f481=TS7+yf9wv3Eumvg2i31X7aRh0mwTsEziY2Ck3XOkxj0=");
@@ -79,8 +101,6 @@ router.post("/", async (req, res) => {
         });
 
         const oryId = registRes.data.identity.id;
-        cardId = parseInt(cardId);
-        const referer_id = parseInt(referrerCode);
 
         // insert account
 
@@ -116,44 +136,46 @@ router.post("/", async (req, res) => {
             }),
         ]);
 
-        // thuong nguoi dung moi
-        channel.sendToQueue(
-            "transaction",
-            Buffer.from(
-                JSON.stringify({
-                    account_id: account_id,
-                    transaction_type: 1, // 1: reward for new user
-                    payload: {},
-                    date: new Date(),
-                })
-            )
-        );
+        if (referer_id) {
+            // thuong nguoi dung moi
+            channel.sendToQueue(
+                "transaction",
+                Buffer.from(
+                    JSON.stringify({
+                        account_id: account_id,
+                        transaction_type: 1, // 1: reward for new user
+                        payload: {},
+                        date: new Date(),
+                    })
+                )
+            );
 
-        // get parents and push to queue
+            // get parents and push to queue
 
-        const parents = await getParents(referer_id);
+            const parents = await getParents(referer_id);
 
-        parents.forEach((parent, i) => {
-            const { id, name, referer_id, is_agency } = parent;
+            parents.forEach((parent, i) => {
+                const { id, name, referer_id, is_agency } = parent;
 
-            if (i === 0 || is_agency) {
-                // neu la nguoi gioi thieu truc tiep hoac nguoi do la agency thi thuong?
-                channel.sendToQueue(
-                    "transaction",
-                    Buffer.from(
-                        JSON.stringify({
-                            account_id: id,
-                            transaction_type: 0, // 0: refer
-                            payload: {
-                                level: i,
-                                is_agency,
-                            },
-                            date: new Date(),
-                        })
-                    )
-                );
-            }
-        });
+                if (i === 0 || is_agency) {
+                    // neu la nguoi gioi thieu truc tiep hoac nguoi do la agency thi thuong?
+                    channel.sendToQueue(
+                        "transaction",
+                        Buffer.from(
+                            JSON.stringify({
+                                account_id: id,
+                                transaction_type: 0, // 0: refer
+                                payload: {
+                                    level: i,
+                                    is_agency,
+                                },
+                                date: new Date(),
+                            })
+                        )
+                    );
+                }
+            });
+        }
     } catch (error) {
         console.log(error.response.data);
         res.status(_.get(error, "response.status") || 500);
