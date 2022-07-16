@@ -2,16 +2,17 @@ const express = require("express");
 const amqp = require("amqplib/callback_api");
 const { getParents } = require("./db-queries");
 const { graphQLClient } = require("./graphql-client");
-const { channel, connection } = require("./queue");
 const {
     GET_REGISTRAION_QUERY,
     APPROVE_REGISTRATION_MUTATION,
     APPROVE_AGENCY_MUTATION,
 } = require("./queries");
+const { useQueue } = require("./queue");
 
 const router = express.Router();
 
-router.post("/approve", async (req, res) => {
+router.post("/approve", useQueue, async (req, res) => {
+    const { amqpChannel } = req;
     console.log(req.body);
 
     const { registrationId } = req.body;
@@ -62,7 +63,7 @@ router.post("/approve", async (req, res) => {
 
         if (is_agency) {
             // neu la nguoi gioi thieu truc tiep hoac nguoi do la agency thi thuong?
-            channel.sendToQueue(
+            amqpChannel.sendToQueue(
                 "transaction",
                 Buffer.from(
                     JSON.stringify({

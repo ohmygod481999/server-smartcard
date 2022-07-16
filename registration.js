@@ -9,12 +9,14 @@ const {
     CREATE_WALLET_MUTATION,
     GET_ACCOUNT_BY_ID_QUERY,
 } = require("./queries");
-const { channel, connection } = require("./queue");
+const { useQueue } = require("./queue");
+// const { channel, connection } = require("./queue");
 // const { pool } = require("./pg-client");
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/", useQueue, async (req, res) => {
+    const { amqpChannel } = req;
     console.log(req.body);
 
     const { flowId, data, myData } = req.body;
@@ -108,7 +110,7 @@ router.post("/", async (req, res) => {
 
         if (referer_id) {
             // thuong nguoi dung moi
-            channel.sendToQueue(
+            amqpChannel.sendToQueue(
                 "transaction",
                 Buffer.from(
                     JSON.stringify({
@@ -129,7 +131,7 @@ router.post("/", async (req, res) => {
 
                 if (i === 0 || is_agency) {
                     // neu la nguoi gioi thieu truc tiep hoac nguoi do la agency thi thuong?
-                    channel.sendToQueue(
+                    amqpChannel.sendToQueue(
                         "transaction",
                         Buffer.from(
                             JSON.stringify({
