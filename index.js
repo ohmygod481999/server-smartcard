@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 
 const storage = require("./storage");
 const registration = require("./registration");
+const agency = require("./agency");
 const { consumerListener } = require("./consumer");
 
 consumerListener()
@@ -25,6 +26,7 @@ app.disable("x-powered-by");
 // routes
 app.use("/storage", storage);
 app.use("/registration", registration);
+app.use("/agency", agency);
 // error handler
 app.use((err, req, res, next) => {
     if (err) {

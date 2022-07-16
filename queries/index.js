@@ -41,3 +41,39 @@ exports.GET_ACCOUNT_BY_ID_QUERY = gql`
         }
     }
 `;
+
+exports.GET_REGISTRAION_QUERY = gql`
+    query getRegistrationByID($registration_id: Int!) {
+        registration_by_pk(id: $registration_id) {
+            id
+            account_id
+            type
+            approved
+            created_at
+        }
+    }
+`;
+
+exports.APPROVE_REGISTRATION_MUTATION = gql`
+    mutation approveRegistration($registration_id: Int!) {
+        update_registration_by_pk(
+            pk_columns: { id: $registration_id }
+            _set: { approved: true }
+        ) {
+            id
+            approved
+        }
+    }
+`;
+
+exports.APPROVE_AGENCY_MUTATION = gql`
+    mutation approveAgency($account_id: Int!) {
+        update_account_by_pk(
+            pk_columns: { id: $account_id }
+            _set: { is_agency: true }
+        ) {
+            id
+            is_agency
+        }
+    }
+`;

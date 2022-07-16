@@ -1,7 +1,6 @@
 const express = require("express");
 const { ory } = require("./ory");
 const _ = require("lodash");
-const amqp = require("amqplib/callback_api");
 const { getParents } = require("./db-queries");
 const { graphQLClient } = require("./graphql-client");
 const {
@@ -10,37 +9,8 @@ const {
     CREATE_WALLET_MUTATION,
     GET_ACCOUNT_BY_ID_QUERY,
 } = require("./queries");
+const { channel, connection } = require("./queue");
 // const { pool } = require("./pg-client");
-
-let channel;
-let connection;
-
-connect();
-
-// connect to rabbitmq
-function connect() {
-    amqp.connect(
-        "amqp://admin:admin@139.59.234.34:5672",
-        function (error0, _connection) {
-            if (error0) {
-                throw error0;
-            }
-            connection = _connection;
-            connection.createChannel(function (error1, _channel) {
-                if (error1) {
-                    throw error1;
-                }
-                const queue = "transaction";
-
-                channel = _channel;
-
-                channel.assertQueue(queue, {
-                    durable: false,
-                });
-            });
-        }
-    );
-}
 
 const router = express.Router();
 
