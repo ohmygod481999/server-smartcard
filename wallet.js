@@ -49,7 +49,7 @@ router.post("/approve-withdraw", useQueue, async (req, res) => {
         "transaction",
         Buffer.from(
             JSON.stringify({
-                account_id: id,
+                account_id: account_id,
                 transaction_type: 3, // 3: withdraw
                 payload: {
                     amount,
