@@ -24,11 +24,12 @@ router.post("/approve", useQueue, async (req, res) => {
     const registration = registrationRes.registration_by_pk;
 
     if (!registration || registration.type !== 0) {
-        return {
+        res.json({
             success: false,
             message:
                 "Registration is not exist or registration type doesn't match",
-        };
+        });
+        return;
     }
 
     const { id, account_id, type, approved, created_at } = registration;

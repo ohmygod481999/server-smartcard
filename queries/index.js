@@ -50,6 +50,7 @@ exports.GET_REGISTRAION_QUERY = gql`
             type
             approved
             created_at
+            payload
         }
     }
 `;
