@@ -86,8 +86,8 @@ router.post("/approve", useQueue, async (req, res) => {
     });
 });
 
-router.get("/children", async (req, res) => {
-    const { user_id } = req.body;
+router.get("/children/:user_id", async (req, res) => {
+    const { user_id } = req.params;
     const children = await getChildren(user_id);
 
     res.json({
