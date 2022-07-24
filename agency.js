@@ -1,6 +1,6 @@
 const express = require("express");
 const amqp = require("amqplib/callback_api");
-const { getParents } = require("./db-queries");
+const { getParents, getChildren } = require("./db-queries");
 const { graphQLClient } = require("./graphql-client");
 const {
     GET_REGISTRAION_QUERY,
@@ -83,6 +83,16 @@ router.post("/approve", useQueue, async (req, res) => {
 
     res.json({
         success: true,
+    });
+});
+
+router.get("/children", async (req, res) => {
+    const { user_id } = req.body;
+    const children = await getChildren(user_id);
+
+    res.json({
+        success: true,
+        data: children,
     });
 });
 
