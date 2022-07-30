@@ -1,12 +1,13 @@
 const amqp = require("amqplib/callback_api");
 const axios = require("axios").default;
-const { POST_TRANSACTION_URL } = require("./config");
+const { POST_TRANSACTION_URL, RABBITMQ_URL } = require("./config");
 
 exports.consumerListener = () => {
     console.log("Consumer listening...");
     console.log(POST_TRANSACTION_URL)
+    console.log(RABBITMQ_URL)
     amqp.connect(
-        "amqp://admin:admin@139.59.234.34:5672",
+        RABBITMQ_URL,
         function (error0, connection) {
             if (error0) {
                 throw error0;
