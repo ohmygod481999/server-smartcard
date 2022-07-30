@@ -1,9 +1,10 @@
 const amqp = require("amqplib/callback_api");
+const { RABBITMQ_URL } = require("./config");
 
 const connectAmqp = () => {
     return new Promise((resolve, reject) => {
         amqp.connect(
-            "amqp://admin:admin@139.59.234.34:5672",
+            RABBITMQ_URL,
             function (error0, connection) {
                 if (error0) {
                     reject(error0);
