@@ -1,8 +1,10 @@
 const amqp = require("amqplib/callback_api");
 const axios = require("axios").default;
+const { POST_TRANSACTION_URL } = require("./config");
 
 exports.consumerListener = () => {
     console.log("Consumer listening...");
+    console.log(POST_TRANSACTION_URL)
     amqp.connect(
         "amqp://admin:admin@139.59.234.34:5672",
         function (error0, connection) {
@@ -37,15 +39,12 @@ exports.consumerListener = () => {
                             JSON.parse(msg.content.toString())
                         );
 
-                        const res = await axios.post(
-                            "https://faas-sgp1-18bc02ac.doserverless.co/api/v1/web/fn-a916d45e-b515-4ffa-8656-7131ef8f4d20/smartcard/transaction",
-                            {
-                                account_id,
-                                transaction_type,
-                                payload,
-                                date,
-                            }
-                        );
+                        const res = await axios.post(POST_TRANSACTION_URL, {
+                            account_id,
+                            transaction_type,
+                            payload,
+                            date,
+                        });
 
                         console.log(res.data);
                     },
