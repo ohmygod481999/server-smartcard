@@ -14,6 +14,8 @@ exports.DB_PORT = process.env.DB_PORT;
 exports.CA_CERT = process.env.CA_CERT;
 exports.CLOUD_FUNCTION_URL = process.env.CLOUD_FUNCTION_URL;
 exports.RABBITMQ_URL = process.env.RABBITMQ_URL;
+exports.ORY_URL = process.env.ORY_URL;
+exports.HASURA_ENDPOINT = process.env.HASURA_ENDPOINT;
 
 exports.POST_TRANSACTION_URL =
     process.env.NODE_ENV === "production"
