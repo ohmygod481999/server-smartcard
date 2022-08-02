@@ -34,14 +34,14 @@ router.post("/approve", useQueue, async (req, res) => {
 
     const { id, account_id, type, approved, created_at } = registration;
 
-    // if (approved) {
-    //     res.status(400);
-    //     res.json({
-    //         success: false,
-    //         message: "This registration has already approved",
-    //     });
-    //     return;
-    // }
+    if (approved) {
+        res.status(400);
+        res.json({
+            success: false,
+            message: "This registration has already approved",
+        });
+        return;
+    }
 
     await Promise.all([
         graphQLClient.request(APPROVE_REGISTRATION_MUTATION, {
@@ -62,7 +62,7 @@ router.post("/approve", useQueue, async (req, res) => {
             return;
         }
 
-        if (is_agency) {
+        if (is_agency || i === 1) {
             // neu la nguoi gioi thieu truc tiep hoac nguoi do la agency thi thuong?
             amqpChannel.sendToQueue(
                 "transaction",
