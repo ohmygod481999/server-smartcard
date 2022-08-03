@@ -11,6 +11,27 @@ exports.INSERT_ACCOUNT_MUTATION = gql`
     }
 `;
 
+exports.CREATE_CV_MUTATION = gql`
+    mutation CreateCV($account_id: Int!, $path: String) {
+        insert_user_cv(objects: {
+              path: $path, 
+              account_id:$account_id 
+        }) { returning {path} }
+}`;
+
+exports.DELETE_CV_MUTATION = gql`
+    mutation DeleteCV($account_id: Int!) {
+    delete_user_cv_by_pk (
+        account_id: $account_id
+    ) {
+      id
+      account_id
+    }
+  }
+`
+
+
+
 exports.CONNECT_ACCONT_TO_CARD_MUTATION = gql`
     mutation updateCard($card_id: Int!, $account_id: Int!) {
         update_card(
@@ -38,6 +59,14 @@ exports.GET_ACCOUNT_BY_ID_QUERY = gql`
     query getAccount($account_id: Int!) {
         account_by_pk(id: $account_id) {
             id
+        }
+    }
+`;
+
+exports.GET_CV_BY_ACCOUNT_ID = gql`
+    query MyQuery ($account_id: Int!) {
+        user_cv_by_pk(account_id: $account_id) {
+            path
         }
     }
 `;

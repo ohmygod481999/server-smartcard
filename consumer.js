@@ -36,8 +36,8 @@ exports.consumerListener = () => {
                             msgObject;
 
                         console.log(
-                            " [x] Received %s",
-                            JSON.parse(msg.content.toString())
+                            " [x] Received %s", new Date(date),
+                            JSON.parse(msg.content)
                         );
 
                         const res = await axios.post(POST_TRANSACTION_URL, {
@@ -47,7 +47,7 @@ exports.consumerListener = () => {
                             date,
                         });
 
-                        console.log(res.data);
+                        console.log(50, res.data);
                     },
                     {
                         noAck: true,

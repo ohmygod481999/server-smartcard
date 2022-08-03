@@ -14,10 +14,17 @@ const { useQueue } = require("./queue");
 // const { pool } = require("./pg-client");
 
 const router = express.Router();
+/** @param {Date} date = Date.now()*/
+const exactlyTime = (date) => {
+    return new Date(date).split(".")[0];
+}
 
 router.post("/", useQueue, async (req, res) => {
     const { amqpChannel } = req;
     console.log(req.body);
+    let now = new Date()
+    now.setHours( now.getHours() + 7 )
+    // exacTime = exactlyTime(now)
 
     const { flowId, data, myData } = req.body;
 
@@ -117,7 +124,8 @@ router.post("/", useQueue, async (req, res) => {
                         account_id: account_id,
                         transaction_type: 1, // 1: reward for new user
                         payload: {},
-                        date: new Date(),
+                        date: now,
+                        // date: exactlyTime(Date.now()),
                     })
                 )
             );
@@ -130,7 +138,7 @@ router.post("/", useQueue, async (req, res) => {
                 const { id, name, referer_id, is_agency } = parent;
 
                 if (i === 0 || is_agency) {
-                    // neu la nguoi gioi thieu truc tiep hoac nguoi do la agency thi thuong?
+                    // nếu là người giới thiệu, thưởng theo cấp độ
                     amqpChannel.sendToQueue(
                         "transaction",
                         Buffer.from(
@@ -141,7 +149,8 @@ router.post("/", useQueue, async (req, res) => {
                                     level: i,
                                     is_agency,
                                 },
-                                date: new Date(),
+                                date: now,
+                                // date: exactlyTime(Date.now()),
                             })
                         )
                     );

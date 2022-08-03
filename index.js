@@ -7,6 +7,7 @@ const storage = require("./storage");
 const registration = require("./registration");
 const agency = require("./agency");
 const wallet = require("./wallet");
+const cv = require("./cv");
 const { consumerListener } = require("./consumer");
 
 consumerListener()
@@ -29,6 +30,7 @@ app.use("/storage", storage);
 app.use("/registration", registration);
 app.use("/agency", agency);
 app.use("/wallet", wallet);
+app.use("/cv", cv);
 // error handler
 app.use((err, req, res, next) => {
     if (err) {
