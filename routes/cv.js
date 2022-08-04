@@ -1,12 +1,12 @@
 const express = require("express");
-const { graphQLClient } = require("./graphql-client")
+const { graphQLClient } = require("../graphql-client")
 const Joi = require("joi");
 const Boom = require("@hapi/boom");
 const { v4: uuidv4 } = require("uuid");
 var multer = require("multer");
 var multerS3 = require("multer-s3");
 const { S3Client } = require("@aws-sdk/client-s3");
-const { GET_CV_BY_ACCOUNT_ID, GET_ACCOUNT_BY_ID_QUERY, CREATE_CV_MUTATION, DELETE_CV_MUTATION } = require("./queries")
+const { GET_CV_BY_ACCOUNT_ID, GET_ACCOUNT_BY_ID_QUERY, CREATE_CV_MUTATION, DELETE_CV_MUTATION } = require("../queries")
 
 const {
     S3_ACCESS_KEY_ID,
@@ -14,7 +14,7 @@ const {
     S3_ENDPOINT,
     S3_BUCKET,
     S3_REGION,
-} = require("./config");
+} = require("../config");
 
 const maxSize = 1000 * 1000;
 

@@ -3,14 +3,10 @@ const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 
-const storage = require("./storage");
-const registration = require("./registration");
-const agency = require("./agency");
-const wallet = require("./wallet");
-const cv = require("./cv");
+const { storage, registration, agency, wallet, cv } = require("./routes");
 const { consumerListener } = require("./consumer");
 
-consumerListener()
+consumerListener();
 
 const app = express();
 // middleware

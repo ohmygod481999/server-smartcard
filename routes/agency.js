@@ -1,13 +1,13 @@
 const express = require("express");
 const amqp = require("amqplib/callback_api");
-const { getParents, getChildren } = require("./db-queries");
-const { graphQLClient } = require("./graphql-client");
+const { getParents, getChildren } = require("../db-queries");
+const { graphQLClient } = require("../graphql-client");
 const {
     GET_REGISTRAION_QUERY,
     APPROVE_REGISTRATION_MUTATION,
     APPROVE_AGENCY_MUTATION,
-} = require("./queries");
-const { useQueue } = require("./queue");
+} = require("../queries");
+const { useQueue } = require("../queue");
 
 const router = express.Router();
 

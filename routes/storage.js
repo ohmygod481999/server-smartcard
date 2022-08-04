@@ -12,7 +12,7 @@ const {
     S3_ENDPOINT,
     S3_BUCKET,
     S3_REGION,
-} = require("./config");
+} = require("../config");
 
 const maxSize = 1000 * 1000;
 

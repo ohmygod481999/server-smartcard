@@ -1,10 +1,10 @@
 const express = require("express");
-const { graphQLClient } = require("./graphql-client");
+const { graphQLClient } = require("../graphql-client");
 const {
     GET_REGISTRAION_QUERY,
     APPROVE_REGISTRATION_MUTATION,
-} = require("./queries");
-const { useQueue } = require("./queue");
+} = require("../queries");
+const { useQueue } = require("../queue");
 
 const router = express.Router();
 
