@@ -3,8 +3,9 @@ const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 
-const { storage, registration, agency, wallet, cv } = require("./routes");
+const { storage, registration, agency, wallet, cv, order } = require("./routes");
 const { consumerListener } = require("./consumer");
+const { ROOT_WALLET_ID } = require("./config");
 
 consumerListener();
 
@@ -27,6 +28,7 @@ app.use("/registration", registration);
 app.use("/agency", agency);
 app.use("/wallet", wallet);
 app.use("/cv", cv);
+app.use("/order", order);
 // error handler
 app.use((err, req, res, next) => {
     if (err) {

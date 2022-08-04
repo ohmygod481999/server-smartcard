@@ -16,6 +16,7 @@ exports.CLOUD_FUNCTION_URL = process.env.CLOUD_FUNCTION_URL;
 exports.RABBITMQ_URL = process.env.RABBITMQ_URL;
 exports.ORY_URL = process.env.ORY_URL;
 exports.HASURA_ENDPOINT = process.env.HASURA_ENDPOINT;
+exports.ROOT_WALLET_ID = process.env.ROOT_WALLET_ID;
 
 exports.POST_TRANSACTION_URL =
     process.env.NODE_ENV === "production"
