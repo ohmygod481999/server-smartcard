@@ -106,10 +106,13 @@ exports.GET_REGISTRAION_QUERY = gql`
 `;
 
 exports.APPROVE_REGISTRATION_MUTATION = gql`
-    mutation approveRegistration($registration_id: Int!) {
+    mutation approveRegistration(
+        $registration_id: Int!
+        $approved_at: timestamp!
+    ) {
         update_registration_by_pk(
             pk_columns: { id: $registration_id }
-            _set: { approved: true }
+            _set: { approved: true, approved_at: $approved_at }
         ) {
             id
             approved
@@ -118,10 +121,10 @@ exports.APPROVE_REGISTRATION_MUTATION = gql`
 `;
 
 exports.APPROVE_AGENCY_MUTATION = gql`
-    mutation approveAgency($account_id: Int!) {
+    mutation approveAgency($account_id: Int!, $agency_at: timestamp!) {
         update_account_by_pk(
             pk_columns: { id: $account_id }
-            _set: { is_agency: true }
+            _set: { is_agency: true, agency_at: $agency_at }
         ) {
             id
             is_agency

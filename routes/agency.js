@@ -8,6 +8,7 @@ const {
     APPROVE_AGENCY_MUTATION,
 } = require("../queries");
 const { useQueue } = require("../queue");
+const { getCurrentTime } = require("../utils");
 
 const router = express.Router();
 
@@ -46,9 +47,11 @@ router.post("/approve", useQueue, async (req, res) => {
     await Promise.all([
         graphQLClient.request(APPROVE_REGISTRATION_MUTATION, {
             registration_id: registrationId,
+            approved_at: getCurrentTime(),
         }),
         graphQLClient.request(APPROVE_AGENCY_MUTATION, {
             account_id: account_id,
+            agency_at: getCurrentTime(),
         }),
     ]);
 
@@ -74,7 +77,7 @@ router.post("/approve", useQueue, async (req, res) => {
                             level: i - 1,
                             is_agency,
                         },
-                        date: new Date(),
+                        date: getCurrentTime(),
                     })
                 )
             );
