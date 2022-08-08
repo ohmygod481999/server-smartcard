@@ -63,6 +63,14 @@ const uploadMiddleware = async (req, res, next) => {
     } else return res.status(400).send("account_id is required")
 }
 
+router.get("/get", async (req, res) => {
+    console.log(`Hello ${req.query.account}`)
+    let cv = await graphQLClient.request(GET_CV_BY_ACCOUNT_ID, { account_id:req.query.account })
+    if (cv.user_cv_by_pk) {
+        return res.status(200).send(cv.user_cv_by_pk)
+    } else return res.status(400).send("cv not found")
+})
+
 router.post("/upload", uploadMiddleware, upload.single("file"), async function (req, res, next) {
     try {
         if(!req.file) throw new Error("File is required")

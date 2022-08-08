@@ -64,7 +64,7 @@ exports.GET_ACCOUNT_BY_ID_QUERY = gql`
 `;
 
 exports.GET_CV_BY_ACCOUNT_ID = gql`
-    query MyQuery ($account_id: Int!) {
+    query MyQuery($account_id: Int!) {
         user_cv_by_pk(account_id: $account_id) {
             path
         }
