@@ -34,7 +34,10 @@ app.use((err, req, res, next) => {
     if (err) {
         console.error(err.message);
         console.error(err.stack);
-        return res.status(err.output.statusCode | 500).json(err.output.payload);
+        return res.status(err?.output?.statusCode || 500).json(err?.output?.payload || {
+            success: false,
+            message: err.message
+        });
     }
 });
 
