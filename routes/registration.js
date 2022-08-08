@@ -1,30 +1,22 @@
 const express = require("express");
-const { ory } = require("./ory");
+const { ory } = require("../ory");
 const _ = require("lodash");
-const { getParents } = require("./db-queries");
-const { graphQLClient } = require("./graphql-client");
+const { getParents } = require("../db-queries");
+const { graphQLClient } = require("../graphql-client");
 const {
     INSERT_ACCOUNT_MUTATION,
     CONNECT_ACCONT_TO_CARD_MUTATION,
     CREATE_WALLET_MUTATION,
     GET_ACCOUNT_BY_ID_QUERY,
-} = require("./queries");
-const { useQueue } = require("./queue");
-// const { channel, connection } = require("./queue");
-// const { pool } = require("./pg-client");
+} = require("../queries");
+const { useQueue } = require("../queue");
+const { getCurrentTime } = require("../utils");
 
 const router = express.Router();
-/** @param {Date} date = Date.now()*/
-const exactlyTime = (date) => {
-    return new Date(date).split(".")[0];
-}
 
 router.post("/", useQueue, async (req, res) => {
     const { amqpChannel } = req;
     console.log(req.body);
-    let now = new Date()
-    now.setHours( now.getHours() + 7 )
-    // exacTime = exactlyTime(now)
 
     const { flowId, data, myData } = req.body;
 
@@ -35,8 +27,6 @@ router.post("/", useQueue, async (req, res) => {
     );
     const cookiesString = cookies.join(";");
 
-    // data["traits"]["card_id"] = parseInt(cardId);
-    // data["traits"]["referer_id"] = parseInt(referrerCode);
     cardId = parseInt(cardId);
     let referer_id = null;
 
@@ -124,7 +114,7 @@ router.post("/", useQueue, async (req, res) => {
                         account_id: account_id,
                         transaction_type: 1, // 1: reward for new user
                         payload: {},
-                        date: now,
+                        date: getCurrentTime(),
                         // date: exactlyTime(Date.now()),
                     })
                 )
@@ -149,7 +139,7 @@ router.post("/", useQueue, async (req, res) => {
                                     level: i,
                                     is_agency,
                                 },
-                                date: now,
+                                date: getCurrentTime(),
                                 // date: exactlyTime(Date.now()),
                             })
                         )
@@ -166,10 +156,6 @@ router.post("/", useQueue, async (req, res) => {
         });
         return;
     }
-
-    // pool.query("SELECT * FROM ", (err, res) => {
-    //     console.log(err, res);
-    // });
 });
 
 module.exports = router;

@@ -3,14 +3,11 @@ const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 
-const storage = require("./storage");
-const registration = require("./registration");
-const agency = require("./agency");
-const wallet = require("./wallet");
-const cv = require("./cv");
+const { storage, registration, agency, wallet, cv, order } = require("./routes");
 const { consumerListener } = require("./consumer");
+const { ROOT_WALLET_ID } = require("./config");
 
-consumerListener()
+consumerListener();
 
 const app = express();
 // middleware
@@ -31,6 +28,7 @@ app.use("/registration", registration);
 app.use("/agency", agency);
 app.use("/wallet", wallet);
 app.use("/cv", cv);
+app.use("/order", order);
 // error handler
 app.use((err, req, res, next) => {
     if (err) {

@@ -1,10 +1,11 @@
 const express = require("express");
-const { graphQLClient } = require("./graphql-client");
+const { graphQLClient } = require("../graphql-client");
 const {
     GET_REGISTRAION_QUERY,
     APPROVE_REGISTRATION_MUTATION,
-} = require("./queries");
-const { useQueue } = require("./queue");
+} = require("../queries");
+const { useQueue } = require("../queue");
+const { getCurrentTime } = require("../utils");
 
 const router = express.Router();
 
@@ -43,6 +44,7 @@ router.post("/approve-withdraw", useQueue, async (req, res) => {
 
     await graphQLClient.request(APPROVE_REGISTRATION_MUTATION, {
         registration_id: registrationId,
+        approved_at: getCurrentTime()
     });
 
     amqpChannel.sendToQueue(
@@ -54,7 +56,7 @@ router.post("/approve-withdraw", useQueue, async (req, res) => {
                 payload: {
                     amount,
                 },
-                date: new Date(),
+                date: getCurrentTime(),
             })
         )
     );
