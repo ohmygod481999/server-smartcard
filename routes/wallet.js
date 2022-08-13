@@ -147,7 +147,7 @@ router.post("/withdraw", async (req, res) => {
         success: "true",
         message: "Thành công",
         data: {
-            id: registrationRes.insert_registration_one,
+            id: registrationRes.insert_registration_one.id,
         },
     });
 });
