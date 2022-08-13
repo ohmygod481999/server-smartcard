@@ -105,6 +105,38 @@ exports.GET_REGISTRAION_QUERY = gql`
     }
 `;
 
+exports.GET_REGISTRAION_QUERY = gql`
+    query getRegistrationByID($registration_id: Int!) {
+        registration_by_pk(id: $registration_id) {
+            id
+            account_id
+            type
+            approved
+            created_at
+            payload
+        }
+    }
+`;
+
+exports.GET_WITHDRAW_REGISTRATION_BY_ACCOUNT_ID = gql`
+    query getRegistrationByAccountId($account_id: Int!, $approved: Boolean) {
+        registration(
+            where: {
+                account_id: { _eq: $account_id }
+                type: { _eq: 1 }
+                approved: { _eq: $approved }
+            }
+        ) {
+            id
+            account_id
+            type
+            approved
+            payload
+            created_at
+        }
+    }
+`;
+
 exports.APPROVE_REGISTRATION_MUTATION = gql`
     mutation approveRegistration(
         $registration_id: Int!
@@ -186,6 +218,22 @@ exports.INSERT_TRANSACTION = gql`
             }
         ) {
             id
+        }
+    }
+`;
+
+exports.INSERT_REGISTRATION = gql`
+    mutation insertAgencyRegistration(
+        $account_id: Int!
+        $type: Int!
+        $payload: jsonb
+    ) {
+        insert_registration_one(
+            object: { account_id: $account_id, type: $type, payload: $payload }
+        ) {
+            account_id
+            id
+            type
         }
     }
 `;

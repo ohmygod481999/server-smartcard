@@ -30,3 +30,8 @@ exports.TRANSACTION_TYPE = {
     WITHDRAW: 3,
     PLACE_ORDER: 4,
 };
+
+exports.REGISTRATION_TYPE = {
+    AGENCY: 0,
+    WITHDRAW: 1,
+};
